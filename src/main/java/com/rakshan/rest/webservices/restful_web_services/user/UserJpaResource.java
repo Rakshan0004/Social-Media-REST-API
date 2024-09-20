@@ -14,26 +14,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.rakshan.rest.webservices.restful_web_services.jpa.UserRepository;
+
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import jakarta.validation.Valid;
 
 @RestController
-public class UserResource {
+public class UserJpaResource {
 	
 
 	private UserDaoService service;
 	
-	public UserResource(UserDaoService service) {
+	private UserRepository repository;
+	
+	public UserJpaResource(UserDaoService service, UserRepository repository) {
 		this.service = service;
+		this.repository = repository;
 	}
 	
-	@GetMapping("/users")
+	@GetMapping("/jpa/users")
 	public List<User> retrieveAllUsers(){
 		return service.findAll();
 	}
 	
 	
-	@GetMapping("/users/{id}")
+	@GetMapping("/jpa/users/{id}")
 	public EntityModel<User> retrieveUser(@PathVariable int id) {
 		User user = service.findOne(id);
 		
@@ -46,7 +52,7 @@ public class UserResource {
 		return entityModel;
 	}
 	
-	@DeleteMapping("/users/{id}")
+	@DeleteMapping("/jpa/users/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable int id) {
 	    User user = service.findOne(id);
 	    if (user == null) {
@@ -62,7 +68,7 @@ public class UserResource {
 //	    service.deleteById(id);
 //	}
 
-	@PostMapping("/users")
+	@PostMapping("/jpa/users")
 	public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
 		User savedUser = service.save(user);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
